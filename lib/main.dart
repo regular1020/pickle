@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pickle',
       theme: ThemeData(
+        primaryColor: Colors.white,
         primarySwatch: Colors.grey,
       ),
       home: Home(),
