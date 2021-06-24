@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pickle/src/data.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Home extends StatelessWidget {
 
@@ -25,173 +24,168 @@ class Home extends StatelessWidget {
     return imageList;
   }
 
+  Widget _makePickPeople(int index){
+    if (datas[index]["picks"].length > 0){
+      return Text(datas[index]["picks"][0] + "님 외 " + (datas[index]["picks"].length-1).toString() + "명");
+    }else{
+      return Text("아직 아무도 참여하지 않았습니다");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        SlidingUpPanel(
-          minHeight: MediaQuery.of(context).size.height * 0.2,
-          maxHeight: MediaQuery.of(context).size.height,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          body : Scaffold(
-            appBar: AppBar(
-              title: Text("Pickle"),
-              actions: <Widget>[
-                new IconButton(
-                  onPressed: (){
-                    //검색화면 이동
-                  },
-                  icon: Icon(Icons.search)
-                ),
-                new IconButton(
-                  onPressed: (){
-                    //친구초대화면 이동
-                  },
-                  icon: Icon(Icons.mail)
-                ),
-                new IconButton(
-                  onPressed: (){
-                    //알람확인화면 이동
-                  },
-                  icon: Icon(Icons.add_alert)
-                ),
-              ],
-              elevation: 0,
-            ),
-            body : ListView.separated(
-              itemBuilder: (BuildContext _context, int index){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Pickle"),
+        actions: [
+          new IconButton(
+            onPressed: (){
+              //검색화면 이동
+            },
+            icon: Icon(Icons.search),
+          ),
+          new IconButton(
+            onPressed: (){
+              //친구초대화면 이동
+            },
+            icon: Icon(Icons.mail),
+          ),
+          new IconButton(
+            onPressed: (){
+              //알람확인화면 이동
+            },
+            icon: Icon(Icons.add_alert),
+          ),
+        ],
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              itemBuilder: (context, int index){
                 return GestureDetector(
                   child: Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: ClipRRect(
                             child: Image.asset(datas[index]["icon"], height: 50, width: 50,),
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
-                          Container(width: 10,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(datas[index]["name"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
-                              Container(height: 5,),
-                              Row(
-                                  children: makeImageList(index)
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(datas[index]["writer"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+                                  Text(datas[index]["status"], style: TextStyle(color: Colors.indigo, fontSize: 10),)
+                                ],
+                              )
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Row(
+                                children: makeImageList(index),
                               ),
-                              Container(height: 5,),
-                              Text(datas[index]["text"], style: TextStyle(color: Colors.indigo,),),
-                              Container(height: 5,),
-                              Text("외 n명")
-                            ],
-                          ),
-                        ],
-                      )
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Text(datas[index]["text"], style: TextStyle(color: Colors.indigo),),
+                            ),
+                            _makePickPeople(index),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                  onTap: () {
+                  onTap: (){
 
                   },
                 );
-                },
-                separatorBuilder: (context, index) {
-                  return Container(height: 15,);
-                },
-                itemCount: datas.length,
-              ),
-            ),
-          panelBuilder: (controller) =>SlidePanelWidget(controller: controller,),
-        ),
-        Positioned(
-          right: MediaQuery.of(context).size.width*0.05,
-          bottom: MediaQuery.of(context).size.height*0.05,
-          child : FloatingActionButton(
-            backgroundColor: Colors.white,
-            onPressed: (){
-
-            },
-            child: Icon(Icons.person),
-          )
-        ),
-        Positioned(
-            right: MediaQuery.of(context).size.width*0.33,
-            bottom: MediaQuery.of(context).size.height*0.05,
-            child : Container(
-              width: MediaQuery.of(context).size.width*0.34,
-              height: 50,
-              child: new RawMaterialButton(
-                fillColor: Colors.blue,
-                shape: new RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                onPressed: (){
-
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add),
-                    Text("방 만들기")
-                  ],
-                ),
-              ),
-            )
-        ),
-      ],
-    );
-  }
-}
-
-class SlidePanelWidget extends StatelessWidget {
-  final ScrollController controller;
-
-  const SlidePanelWidget({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 15,),
-          Center(
-            child: Container(
-              width : 30,
-              height : 5,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          Text(
-            "결과보기",
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 20,
-            ),
-            textAlign: TextAlign.start,
-          ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              controller: controller,
-              padding: EdgeInsets.zero,
-              itemCount: 20,
-              itemBuilder: (BuildContext context, int index){
-                return Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Text("$index",),
-                );
               },
+              separatorBuilder: (context, index){
+                return Divider(height: 10,);
+              },
+              itemCount: datas.length,
             ),
           ),
         ],
-      ),
+      )
+
     );
   }
 }
 
+// class SlidePanelWidget extends StatelessWidget {
+//   final ScrollController controller;
+//   final PanelController panelController;
+//
+//   const SlidePanelWidget({
+//     Key? key,
+//     required this.panelController,
+//     required this.controller,
+//   }) : super(key: key);
+//
+//   // Widget _makeResultList(){
+//   //   return
+//   // }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       borderRadius: BorderRadius.all(Radius.circular(20)),
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         mainAxisAlignment: MainAxisAlignment.start,
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: <Widget>[
+//           SizedBox(height: 15,),
+//           Center(
+//             child: Container(
+//               width : 30,
+//               height : 5,
+//               decoration: BoxDecoration(
+//                 color: Colors.grey,
+//               ),
+//             ),
+//           ),
+//           Text(
+//             "결과보기",
+//             style: TextStyle(
+//               color: Colors.blue,
+//               fontSize: 20,
+//             ),
+//             textAlign: TextAlign.start,
+//           ),
+//           Expanded(
+//             child: GridView.builder(
+//              itemBuilder: (context, int index){
+//                return GestureDetector(
+//                  child: Container(
+//                    height: 200,
+//                    width: 200,
+//                    color: Colors.blue,
+//                  ),
+//                );
+//              },
+//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                 crossAxisCount: 2,
+//                 crossAxisSpacing: 10,
+//                 mainAxisSpacing: 10,
+//               ),
+//               itemCount: 20,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
