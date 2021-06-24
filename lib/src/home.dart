@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:pickle/src/data.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Home extends StatelessWidget {
+
+  List<Widget> makeImageList(int index){
+    List<Widget> imageList = [];
+    if (datas[index]["images"].length < 5){
+      for(int i = 0; i < datas[index]["images"].length; i++){
+        imageList.add(
+          ClipRRect(
+            child: Image.asset(datas[index]["images"][i], width: 75, height: 75, fit: BoxFit.fill,),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          )
+          
+        );
+        imageList.add(Container(width: 10,));
+      }
+    }else{
+      for(int i = 0; i < 3; i++){
+        imageList.add(Image.asset(datas[index]["images"][i], width: 75, height: 75, fit: BoxFit.fill,));
+      }
+    }
+    return imageList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -17,44 +40,66 @@ class Home extends StatelessWidget {
               actions: <Widget>[
                 new IconButton(
                   onPressed: (){
-
+                    //검색화면 이동
                   },
                   icon: Icon(Icons.search)
                 ),
                 new IconButton(
                   onPressed: (){
-
+                    //친구초대화면 이동
                   },
                   icon: Icon(Icons.mail)
                 ),
                 new IconButton(
                   onPressed: (){
-
+                    //알람확인화면 이동
                   },
                   icon: Icon(Icons.add_alert)
                 ),
               ],
               elevation: 0,
             ),
-            body : ListView.builder(
+            body : ListView.separated(
               itemBuilder: (BuildContext _context, int index){
-                return Container(
-                  child: Row(
-                    children: [
-                      Container(),
-                      Column(
+                return GestureDetector(
+                  child: Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("이름")
+                          ClipRRect(
+                            child: Image.asset(datas[index]["icon"], height: 50, width: 50,),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          Container(width: 10,),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(datas[index]["name"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+                              Container(height: 5,),
+                              Row(
+                                  children: makeImageList(index)
+                              ),
+                              Container(height: 5,),
+                              Text(datas[index]["text"], style: TextStyle(color: Colors.indigo,),),
+                              Container(height: 5,),
+                              Text("외 n명")
+                            ],
+                          ),
                         ],
-                      ),
-                    ],
-                  )
+                      )
+                  ),
+                  onTap: () {
+
+                  },
                 );
-              },
-                itemCount: 7,
+                },
+                separatorBuilder: (context, index) {
+                  return Container(height: 15,);
+                },
+                itemCount: datas.length,
               ),
             ),
-          panelBuilder: (controller) =>PanelWidget(controller: controller,),
+          panelBuilder: (controller) =>SlidePanelWidget(controller: controller,),
         ),
         Positioned(
           right: MediaQuery.of(context).size.width*0.05,
@@ -68,7 +113,6 @@ class Home extends StatelessWidget {
           )
         ),
         Positioned(
-
             right: MediaQuery.of(context).size.width*0.33,
             bottom: MediaQuery.of(context).size.height*0.05,
             child : Container(
@@ -96,10 +140,10 @@ class Home extends StatelessWidget {
   }
 }
 
-class PanelWidget extends StatelessWidget {
+class SlidePanelWidget extends StatelessWidget {
   final ScrollController controller;
 
-  const PanelWidget({
+  const SlidePanelWidget({
     Key? key,
     required this.controller,
   }) : super(key: key);
@@ -150,3 +194,4 @@ class PanelWidget extends StatelessWidget {
     );
   }
 }
+
