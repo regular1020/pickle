@@ -34,94 +34,160 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Pickle"),
-        actions: [
-          new IconButton(
-            onPressed: (){
-              //검색화면 이동
-            },
-            icon: Icon(Icons.search),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text("Pickle"),
+            actions: [
+              new IconButton(
+                onPressed: (){
+                //검색화면 이동
+                },
+                icon: Icon(Icons.search),
+              ),
+              new IconButton(
+                onPressed: (){
+                //친구초대화면 이동
+                },
+                icon: Icon(Icons.mail),
+              ),
+              new IconButton(
+                onPressed: (){
+                //알람확인화면 이동
+                },
+                icon: Icon(Icons.add_alert),
+              ),
+            ],
+            elevation: 0,
           ),
-          new IconButton(
-            onPressed: (){
-              //친구초대화면 이동
-            },
-            icon: Icon(Icons.mail),
-          ),
-          new IconButton(
-            onPressed: (){
-              //알람확인화면 이동
-            },
-            icon: Icon(Icons.add_alert),
-          ),
-        ],
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              itemBuilder: (context, int index){
-                return GestureDetector(
-                  child: Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: ClipRRect(
-                            child: Image.asset(datas[index]["icon"], height: 50, width: 50,),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                        Column(
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (context, int index){
+                    return GestureDetector(
+                      child: Container(
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(datas[index]["writer"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
-                                  Text(datas[index]["status"], style: TextStyle(color: Colors.indigo, fontSize: 10),)
-                                ],
-                              )
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Row(
-                                children: makeImageList(index),
+                              padding: EdgeInsets.only(right: 10),
+                              child: ClipRRect(
+                                child: Image.asset(datas[index]["icon"], height: 50, width: 50,),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text(datas[index]["text"], style: TextStyle(color: Colors.indigo),),
-                            ),
-                            _makePickPeople(index),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(datas[index]["writer"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+                                        Text(datas[index]["status"], style: TextStyle(color: Colors.indigo, fontSize: 10),)
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Row(
+                                    children: makeImageList(index),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Text(datas[index]["text"], style: TextStyle(color: Colors.indigo),),
+                                ),
+                                _makePickPeople(index),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  ),
-                  onTap: (){
+                        ),
+                      ),
+                      onTap: (){
 
-                  },
-                );
-              },
-              separatorBuilder: (context, index){
-                return Divider(height: 10,);
-              },
-              itemCount: datas.length,
-            ),
+                        },
+                    );
+                    },
+                  separatorBuilder: (context, index){
+                    return Divider(height: 10,);
+                    },
+                  itemCount: datas.length,
+                ),
+              ),
+            ],
           ),
-        ],
-      )
-
+        ),
+        DraggableScrollableSheet(
+          initialChildSize: 0.2,
+          minChildSize: 0.2,
+          maxChildSize: 0.9,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return SingleChildScrollView(
+                controller: scrollController,
+                child: Card(
+                  elevation: 12.0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  margin: const EdgeInsets.all(0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: ResultList()
+                  ),
+                )
+            );
+          }
+        ),
+      ],
     );
   }
 }
+
+class ResultList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(5),
+          child: Center(
+            child: Container(
+              height: 5,
+              width: 20,
+              color: Colors.grey,
+            ),
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Text("결과 보기", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),)
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height*0.90,
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                child: Text("Item $index",),
+                color: Colors.blue,
+              );
+            },
+          )
+        ),
+      ],
+    );
+  }
+}
+
 
 // class SlidePanelWidget extends StatelessWidget {
 //   final ScrollController controller;
