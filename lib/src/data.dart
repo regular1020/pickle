@@ -35,6 +35,8 @@ List<Map<String, dynamic>> datas = [
 
 List<Map<String, dynamic>> finished = [
   {
-    "picture" : ""
+    "picture" : "",
+    "text" : "",
+    "writer" : "",
   }
 ];
