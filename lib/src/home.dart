@@ -87,9 +87,16 @@ class Home extends StatelessWidget {
     // values for comment
     const double _commentIconSize = 17.0;
     const double _commentCountFontSize = 20.0;
+    // values for padding
+    const double _postPadding = 10.0;
+    const double _iconPaddingRight = 3.0;
+    const double _writerPaddingBottom = 5.0;
+    const double _imageListPaddingBottom = 5.0;
+    const double _textPaddingBottom = 5.0;
+    const double _separatorHeight = 10.0;
 
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(_postPadding),
       child: Column(
         children: [
           Expanded(
@@ -106,7 +113,7 @@ class Home extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(right: 3),
+                            padding: EdgeInsets.only(right: _iconPaddingRight),
                             child: GestureDetector(
                               child: ClipRRect(
                                 child: Image.asset(postData[index].icon, height: _writerIconSize, width: _writerIconSize,),
@@ -118,42 +125,42 @@ class Home extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                      padding: EdgeInsets.only(bottom: 5),
-                                      child: Row(
-                                        children: [
-                                          Text(postData[index].writer, style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
-                                          Expanded(child: Container(),),
-                                          Row(children: [Icon(Icons.lock_open_rounded, size: _statusIconSize,), Text(postData[index].status, style: TextStyle(color: Colors.indigo),),],)
-                                        ],
-                                      )
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                    child: Row(
-                                      children: _makeImageList(context, index, postData),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                    child: Text(postData[index].text, style: TextStyle(color: Colors.indigo),),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: _writerPaddingBottom),
                                     child: Row(
                                       children: [
-                                        _makePickPeople(index, postData),
+                                        Text(postData[index].writer, style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
                                         Expanded(child: Container(),),
-                                        Icon(Icons.speaker_notes, size: _commentIconSize,),
-                                        Text(postData[index].comments.length.toString(), style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold, fontSize: _commentCountFontSize),),
+                                        Row(children: [Icon(Icons.lock_open_rounded, size: _statusIconSize,), Text(postData[index].status, style: TextStyle(color: Colors.indigo),),],)
                                       ],
-                                    ),
-                                  )
-                                ],
-                              )
+                                    )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: _imageListPaddingBottom),
+                                  child: Row(
+                                    children: _makeImageList(context, index, postData),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: _textPaddingBottom),
+                                  child: Text(postData[index].text, style: TextStyle(color: Colors.indigo),),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Row(
+                                    children: [
+                                      _makePickPeople(index, postData),
+                                      Expanded(child: Container(),),
+                                      Icon(Icons.speaker_notes, size: _commentIconSize,),
+                                      Text(postData[index].comments.length.toString(), style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold, fontSize: _commentCountFontSize),),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
                           )
                         ],
                       ),
@@ -164,7 +171,7 @@ class Home extends StatelessWidget {
                 }
               },
               separatorBuilder: (context, index){
-                return Container(height: 10,);
+                return Container(height: _separatorHeight,);
               },
               itemCount: postData.length+1,
             ),
@@ -177,15 +184,18 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PostProvider _postProvider = Provider.of<PostProvider>(context, listen: false);
+
     // values for panel
     double _panelMinHeight = MediaQuery.of(context).size.height * 0.2;
     double _panelMaxHeight = MediaQuery.of(context).size.height;
     const double _panelBorderRadiusVal = 20.0;
+
     // values for profile button
     double _profileButtonPosition = MediaQuery.of(context).size.width*0.05;
     const double _profileButtonWidth = 60.0;
     const double _profileButtonHeight = 50.0;
     const double _profileIconBorderRadiusVal = 20.0;
+
     // values for make_room button
     double _makeRoomButtonPositionRight = MediaQuery.of(context).size.width*0.30;
     double _makeRoomButtonPositionBottom = MediaQuery.of(context).size.height*0.05;
@@ -293,18 +303,25 @@ class SlidePanelWidget extends StatelessWidget {
     double _resultImageSize = MediaQuery.of(context).size.width*0.44;
     DateTime nowDate = DateTime.now();
 
+    // values for padding
+    const double _resultBoxPaddingLeft = 10.0;
+    const double _resultBoxPaddingRight = 10.0;
+
+    // values for images
+    const double _imageRadiusVal = 20.0;
+
+    //values for timer icon
+    const double _timerIconSize = 15.0;
+
     if (resultData.length != 0){
       return Padding(
-        padding: EdgeInsets.only(left: 10, right: 10),
+        padding: EdgeInsets.only(left: _resultBoxPaddingLeft, right: _resultBoxPaddingRight,),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  child: Image.asset(resultData[index].image, width: _resultImageSize, height: _resultImageSize, fit: BoxFit.fill,)
-              ),
+            ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(_imageRadiusVal)),
+                child: Image.asset(resultData[index].image, width: _resultImageSize, height: _resultImageSize, fit: BoxFit.fill,)
             ),
             Text(
               resultData[index].text,
@@ -315,7 +332,7 @@ class SlidePanelWidget extends StatelessWidget {
                   resultData[index].writer,
                 ),
                 Expanded(child: Container()),
-                Icon(Icons.timer, size: 15,),
+                Icon(Icons.timer, size: _timerIconSize,),
                 Text(
                   nowDate.difference(DateTime.parse(resultData[index].finishedDate)).toString().split(":")[0] + ":" + nowDate.difference(DateTime.parse(resultData[index].finishedDate)).toString().split(":")[1]
                 ),
@@ -333,35 +350,50 @@ class SlidePanelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // values for panel
+    const double _panelRadiusVal = 20.0;
+
+    // values for handle
+    const double _slideHandlePaddingTop = 15.0;
+    const double _slideHandleRadiusVal = 50.0;
+    const double _slideHandleWidth = 45.0;
+    const double _slideHandleHeight = 5.0;
+
+    // values for title
+    const double _titlePaddingLeft = 15.0;
+    const double _titleFontSize = 18.0;
+
     ResultProvider _resultProvider = Provider.of<ResultProvider>(context, listen: false);
 
     return Material(
       color: Colors.blueAccent,
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(_panelRadiusVal)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: 15,),
-          Center(
-            child: Container(
-              width : 45,
-              height : 5,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-                color: Colors.grey,
+          Padding(
+            padding: EdgeInsets.only(top: _slideHandlePaddingTop),
+            child: Center(
+              child: Container(
+                width : _slideHandleWidth,
+                height : _slideHandleHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(_slideHandleRadiusVal)),
+                  color: Colors.grey,
+                ),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 15),
+            padding: EdgeInsets.only(left: _titlePaddingLeft),
             child:  Text(
               "결과보기",
               style: TextStyle(
                 color: Colors.indigo,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: _titleFontSize,
               ),
               textAlign: TextAlign.start,
             ),
@@ -379,7 +411,6 @@ class SlidePanelWidget extends StatelessWidget {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.4),
                     crossAxisCount: 2,
-                    mainAxisSpacing: 15,
                   ),
                   itemCount: resultData.length,
                 ),
