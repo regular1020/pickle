@@ -1,15 +1,18 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pickle/src/data.dart';
 import 'package:pickle/src/provider/post_provider.dart';
+import 'package:pickle/src/provider/result_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import 'model/post.dart';
+import 'model/result.dart';
 class Home extends StatelessWidget {
-  late PostProvider _postProvider;
   final panelControler = PanelController();
 
-  List<Widget> _makeImageList(BuildContext context, int index){
+  List<Widget> _makeImageList(BuildContext context, int index, List<Post> postData){
     // values for images
     double _postedImageSize = MediaQuery.of(context).size.width*0.19;
     const double _imageRadiusVal = 15.0;
@@ -17,11 +20,11 @@ class Home extends StatelessWidget {
     double _intervalWidth = MediaQuery.of(context).size.width*0.0155;
 
     List<Widget> imageList = [];
-    if (datas[index]["images"].length < 5){
-      for(int i = 0; i < datas[index]["images"].length; i++){
+    if (postData[index].images.length < 5){
+      for(int i = 0; i < postData[index].images.length; i++){
         imageList.add(
             ClipRRect(
-              child: Image.asset(datas[index]["images"][i], width: _postedImageSize, height: _postedImageSize, fit: BoxFit.fill,),
+              child: Image.asset(postData[index].images[i], width: _postedImageSize, height: _postedImageSize, fit: BoxFit.fill,),
               borderRadius: BorderRadius.all(Radius.circular(_imageRadiusVal)),
             )
         );
@@ -33,7 +36,7 @@ class Home extends StatelessWidget {
       for(int i = 0; i < 3; i++){
         imageList.add(
             ClipRRect(
-              child: Image.asset(datas[index]["images"][i], width: _postedImageSize, height: _postedImageSize, fit: BoxFit.fill,),
+              child: Image.asset(postData[index].images[i], width: _postedImageSize, height: _postedImageSize, fit: BoxFit.fill,),
               borderRadius: BorderRadius.all(Radius.circular(_imageRadiusVal)),
             )
         );
@@ -45,7 +48,7 @@ class Home extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(_imageRadiusVal)),
-            image: DecorationImage(image: AssetImage(datas[index]["images"][3],), fit: BoxFit.fill,),
+            image: DecorationImage(image: AssetImage(postData[index].images[3],), fit: BoxFit.fill,),
           ),
           child: Align(
             alignment: Alignment.center,
@@ -67,15 +70,15 @@ class Home extends StatelessWidget {
     return imageList;
   }
 
-  Widget _makePickPeople(int index){
-    if (datas[index]["picks"].length > 0){
-      return Text(datas[index]["picks"][0] + "님 외 " + (datas[index]["picks"].length-1).toString() + "명");
+  Widget _makePickPeople(int index, List<Post> postData){
+    if (postData[index].picks.length > 0){
+      return Text(postData[index].picks[0] + "님 외 " + (postData[index].picks.length-1).toString() + "명");
     }else{
       return Text("아직 아무도 참여하지 않았습니다");
     }
   }
 
-  Widget _makePostList(List<Map<String, dynamic>> postData){
+  Widget _makePostList(List<Post> postData){
     // values for writer's icon
     const double _writerIconSize = 50.0;
     const double _writerIconRadiusVal = 20.0;
@@ -104,9 +107,14 @@ class Home extends StatelessWidget {
                         children: [
                           Padding(
                             padding: EdgeInsets.only(right: 3),
-                            child: ClipRRect(
-                              child: Image.asset(postData[index]["icon"], height: _writerIconSize, width: _writerIconSize,),
-                              borderRadius: BorderRadius.all(Radius.circular(_writerIconRadiusVal)),
+                            child: GestureDetector(
+                              child: ClipRRect(
+                                child: Image.asset(postData[index].icon, height: _writerIconSize, width: _writerIconSize,),
+                                borderRadius: BorderRadius.all(Radius.circular(_writerIconRadiusVal)),
+                              ),
+                              onTap: (){
+
+                              },
                             ),
                           ),
                           Expanded(
@@ -117,30 +125,30 @@ class Home extends StatelessWidget {
                                       padding: EdgeInsets.only(bottom: 5),
                                       child: Row(
                                         children: [
-                                          Text(postData[index]["writer"], style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+                                          Text(postData[index].writer, style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
                                           Expanded(child: Container(),),
-                                          Row(children: [Icon(Icons.lock_open_rounded, size: _statusIconSize,), Text(postData[index]["status"], style: TextStyle(color: Colors.indigo),),],)
+                                          Row(children: [Icon(Icons.lock_open_rounded, size: _statusIconSize,), Text(postData[index].status, style: TextStyle(color: Colors.indigo),),],)
                                         ],
                                       )
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5),
                                     child: Row(
-                                      children: _makeImageList(context, index),
+                                      children: _makeImageList(context, index, postData),
                                     ),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5),
-                                    child: Text(postData[index]["text"], style: TextStyle(color: Colors.indigo),),
+                                    child: Text(postData[index].text, style: TextStyle(color: Colors.indigo),),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5),
                                     child: Row(
                                       children: [
-                                        _makePickPeople(index),
+                                        _makePickPeople(index, postData),
                                         Expanded(child: Container(),),
                                         Icon(Icons.speaker_notes, size: _commentIconSize,),
-                                        Text(postData[index]["comments"].length.toString(), style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold, fontSize: _commentCountFontSize),),
+                                        Text(postData[index].comments.length.toString(), style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold, fontSize: _commentCountFontSize),),
                                       ],
                                     ),
                                   )
@@ -168,11 +176,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _postProvider = Provider.of<PostProvider>(context, listen: false);
-    // values for pannel
-    double _pannelMinHeight = MediaQuery.of(context).size.height * 0.2;
-    double _pannelMaxHeight = MediaQuery.of(context).size.height;
-    const double _pannelBorderRadiusVal = 20.0;
+    PostProvider _postProvider = Provider.of<PostProvider>(context, listen: false);
+    // values for panel
+    double _panelMinHeight = MediaQuery.of(context).size.height * 0.2;
+    double _panelMaxHeight = MediaQuery.of(context).size.height;
+    const double _panelBorderRadiusVal = 20.0;
     // values for profile button
     double _profileButtonPosition = MediaQuery.of(context).size.width*0.05;
     const double _profileButtonWidth = 60.0;
@@ -191,9 +199,9 @@ class Home extends StatelessWidget {
       children: [
         SlidingUpPanel(
           controller: panelControler,
-          minHeight: _pannelMinHeight,
-          maxHeight: _pannelMaxHeight,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(_pannelBorderRadiusVal)),
+          minHeight: _panelMinHeight,
+          maxHeight: _panelMaxHeight,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(_panelBorderRadiusVal)),
           body : Scaffold(
               appBar: AppBar(
                 title: Text("Pickle"),
@@ -281,15 +289,55 @@ class SlidePanelWidget extends StatelessWidget {
     required this.controller,
   }) : super(key: key);
 
-  // Widget _makeResultList(){
-  //   return
-  // }
+  Widget _makeResultBox(BuildContext context ,int index, List<Result> resultData){
+    double _resultImageSize = MediaQuery.of(context).size.width*0.44;
+    DateTime nowDate = DateTime.now();
+
+    if (resultData.length != 0){
+      return Padding(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  child: Image.asset(resultData[index].image, width: _resultImageSize, height: _resultImageSize, fit: BoxFit.fill,)
+              ),
+            ),
+            Text(
+              resultData[index].text,
+            ),
+            Row(
+              children: [
+                Text(
+                  resultData[index].writer,
+                ),
+                Expanded(child: Container()),
+                Icon(Icons.timer, size: 15,),
+                Text(
+                  nowDate.difference(DateTime.parse(resultData[index].finishedDate)).toString().split(":")[0] + ":" + nowDate.difference(DateTime.parse(resultData[index].finishedDate)).toString().split(":")[1]
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }else{
+      return Center(
+        child: Text("종료된 방이 없습니다."),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    ResultProvider _resultProvider = Provider.of<ResultProvider>(context, listen: false);
+
     return Material(
-      color: Colors.lightBlueAccent,
-      borderRadius: BorderRadius.all(Radius.circular(20)),
+      color: Colors.blueAccent,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -307,7 +355,7 @@ class SlidePanelWidget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10),
+            padding: EdgeInsets.only(left: 15),
             child:  Text(
               "결과보기",
               style: TextStyle(
@@ -318,25 +366,27 @@ class SlidePanelWidget extends StatelessWidget {
               textAlign: TextAlign.start,
             ),
           ),
-          Expanded(
-            child: GridView.builder(
-              itemBuilder: (context, int index){
-                return GestureDetector(
-                  child: Container(
-                    height: 200,
-                    width: 200,
-                    color: Colors.grey,
+          Consumer<ResultProvider>(
+            builder: (context, provider, widget){
+              List<Result> resultData = provider.getResult;
+              return Expanded(
+                child: GridView.builder(
+                  itemBuilder: (context, int index){
+                    return GestureDetector(
+                      child: _makeResultBox(context, index, resultData),
+                    );
+                  },
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.4),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 15,
                   ),
-                );
-              },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: 20,
-            ),
-          ),
+                  itemCount: resultData.length,
+                ),
+              );
+            },
+
+          )
         ],
       ),
     );

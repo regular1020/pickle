@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pickle/src/home.dart';
 import 'package:pickle/src/provider/post_provider.dart';
+import 'package:pickle/src/provider/result_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -17,10 +18,13 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.white,
         primarySwatch: Colors.grey,
       ),
-      home: ChangeNotifierProvider<PostProvider>(
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<PostProvider>(create: (BuildContext context) => PostProvider()),
+          ChangeNotifierProvider<ResultProvider>(create: (BuildContext context) => ResultProvider()),
+        ],
         child: Home(),
-        create: (context) => PostProvider(),
-      )
+      ),
     );
   }
 }

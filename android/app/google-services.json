@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "197561838257",
+    "project_id": "pickle-b623b",
+    "storage_bucket": "pickle-b623b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197561838257:android:4e178b394809b9d3a21090",
+        "android_client_info": {
+          "package_name": "com.example.pickle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197561838257-ipqol2vaoki4ndki3hb6au7nfmuhqa44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCteOtnpZ0hdLeclLIOc3yrFccT55egqmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197561838257-ipqol2vaoki4ndki3hb6au7nfmuhqa44.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
